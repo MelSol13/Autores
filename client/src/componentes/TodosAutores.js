@@ -14,6 +14,15 @@ const TodosAutores = () => {
         .catch(err=> console.log(err));
     }, [])
 
+    const borrarAutor = id => {
+        axios.delete("http://localhost:8000/api/autores/"+id)
+        .then(res =>{
+            let nuevaLista = autores.filter(autor => autor._id !== id);
+            setAutores(nuevaLista);
+        })
+        .catch(err=>console.log(err));
+    }
+
     return(
         <div>
             <Link to="/nuevo" className="btn btn-success">Nuevo Autor</Link>
@@ -51,7 +60,10 @@ const TodosAutores = () => {
                                         autor.articulos ? <span className="text-success">SI</span> : <span className="text-danger">NO</span>
                                     }
                                 </td>
-                                <td></td>
+                                <td>
+                                    <Link className="btn btn-warning" to={`/editar/${autor._id}`}>Editar</Link>
+                                    <button className="btn btn-danger" onClick={()=>borrarAutor(autor._id)}>Borrar</button>
+                                </td>
                             </tr>
                         ))
                     }

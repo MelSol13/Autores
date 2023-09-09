@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
-//useState permite crear variables para que lo que el usuario ingrese se ejecute
+import React, {useState, useEffect} from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; //useNavigate: Redirigir al usuario ejemplo a la pagina principal
 
-const NuevoAutor = () => {
+const ActualizarAutor = () => {
+    const {id} = useParams(); //obtenemos de la URL el id del autor
 
     const [nombre, setNombre]= useState("");
     const [imagen, setImagen]= useState("");
@@ -13,24 +13,35 @@ const NuevoAutor = () => {
 
     const navigate = useNavigate();
 
-    const guardarAutor = e => {
-        e.preventDefault();
-        axios.post("http://localhost:8000/api/autores",{
-        nombre,
-        imagen,
-        libros,
-        cuentos,
-        articulos
-    })
-    .then (res => navigate("/"))
-    .catch(err => console.log(err));
+    useEffect(() => {
+        axios.get("http://localhost:8000/api/autores/"+id)
+        .then(res=>{
+            setNombre(res.data.nombre);
+            setImagen(res.data.imagen);
+            setLibros(res.data.libros);
+            setCuentos(res.data.cuentos);
+            setArticulos(res.data.articulos);
+        })
+        .catch(err=> console.log(err));
+    }, [id])
 
+    const actualizarAutor = e => {
+        e.preventDefault();
+        axios.put("http://localhost:8000/api/autores/"+id, {
+            nombre,
+            imagen,
+            libros,
+            cuentos,
+            articulos
+        })
+            .then(res => navigate("/"))
+            .catch(err => console.log(err));
     }
 
     return(
         <div>
-            <h3>Nuevo Autor</h3>
-            <form onSubmit={guardarAutor}>
+            <h3>Editar Autor</h3>
+            <form onSubmit={actualizarAutor}>
                 <div>
                     <label>Nombre:</label>
                     <input type="text" name="nombre" value={nombre} className="form-control" onChange={e=> setNombre(e.target.value)}></input>
@@ -38,6 +49,7 @@ const NuevoAutor = () => {
                 <div>
                     <label>URL de Imagen:</label>
                     <input type="text" name="imagen" value={imagen} className="form-control" onChange={e=> setImagen(e.target.value)}></input>
+                    <img className="img-fluid" alt="autor" src={imagen}/>
                 </div>
                 <div>
                     <input type="checkbox" className="form-check-input" id="cuentos" name="cuentos" checked={cuentos} onChange={e=>setCuentos(e.target.checked)}/>
@@ -57,4 +69,4 @@ const NuevoAutor = () => {
     )
 }
 
-export default NuevoAutor;
+export default ActualizarAutor;

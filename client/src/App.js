@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import TodosAutores from "./componentes/TodosAutores";
 import NuevoAutor from "./componentes/NuevoAutor";
+import ActualizarAutor from "./componentes/ActualizarAutor";
 
 const App = ()=> {
   return(
@@ -9,6 +10,7 @@ const App = ()=> {
       <Routes>
         <Route path="/" exact element={<TodosAutores/>}/>
         <Route path="/nuevo" element={<NuevoAutor/>}/>
+        <Route path="/editar/:id" element={<ActualizarAutor/>}/>
       </Routes>
     </div>
   )
